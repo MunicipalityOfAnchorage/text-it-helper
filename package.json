@@ -1,0 +1,19 @@
+{
+  "name": "text-it-webhooks",
+  "version": "1.0.0",
+  "description": "Webhooks to use with TextIt",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Aaron Schachter",
+  "license": "MIT",
+  "dependencies": {
+    "basic-auth": "^2.0.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "heroku-logger": "^0.3.3",
+    "lodash": "^4.17.19",
+    "superagent": "^5.3.1"
+  }
+}
