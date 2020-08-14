@@ -176,3 +176,8 @@ module.exports.getUrlForContactId = (contactId) => {
 module.exports.getUrlForGroupId = (groupId) => {
   return `https://textit.in/contact/filter/${groupId}`;
 }
+
+module.exports = {
+  get,
+};
+

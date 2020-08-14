@@ -6,10 +6,42 @@ const logger = require('heroku-logger');
 
 const textIt = require('./api/services/text-it');
 
-const getAllSubscribersGroup = async () => {
-  const res = await textIt.getAllSubscribersGroup();
+const getAllBatchGroups = async () => {
+  const groups = [];
 
-  console.log(res);
+  try {
+    // Get first page of groups.
+    let res = await textIt.get('groups');
+
+    let { results } = res.body;
+    let nextPage = res.next;
+    let i = 0;
+
+    while (results || nextPage) {
+      results.forEach((group) => {
+        if (group.name.includes('Batch ')) {
+          groups.push(group);
+        }
+      });
+
+      logger.debug(`Found ${results.length} groups`);
+
+      if (nextPage) {
+        res = await textIt.getByUrl(nextPage);
+
+        results = res.body.results;
+        nextPage = res.body.next;       
+      } else {
+        break;
+      }
+    }
+
+    console.log(groups);
+
+    return groups;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 const checkForNewSubscribers = async () => {
@@ -43,5 +75,5 @@ const checkForNewSubscribers = async () => {
 };
 
 (async function() {
-  await checkForNewSubscribers();
+  const batchGroups = getAllBatchGroups();
 })();
