@@ -17,9 +17,7 @@ const getBatchGroupNumber = (group) => {
 
   const groupNameParts = group.name.split(' ');
 
-  const result = Number(groupNameParts[1]);
-  console.log('getBatchGroupNumber', result);
-  return result;
+  return Number(groupNameParts[1]);
 };
 
 /**
@@ -27,9 +25,7 @@ const getBatchGroupNumber = (group) => {
  * @return {Boolean}
  */
 const isContactInABatchGroup = (contact) => {
-  const result = contact.groups.some(group => getBatchGroupNumber(group));
-  console.log(contact.uuid, result);
-  return result;
+  return contact.groups.some(group => getBatchGroupNumber(group));
 };
 
 /**
@@ -41,9 +37,9 @@ const getLastBatchGroup = async () => {
 
   try {
     // Get first page of groups.
-    let res = await textIt.get('groups');
+    let res = await textIt.getGroups();
 
-    let { results } = res.body;
+    let { results } = res;
     let nextPage = res.next;
     let i = 0;
 
@@ -69,15 +65,16 @@ const getLastBatchGroup = async () => {
       }
     }
 
-    console.log(lastBatchGroup);
-
     return lastBatchGroup;
   } catch (error) {
-    logger.error('getLastBatchGroup', error);
+    logger.error('getLastBatchGroup', { error: error.message });
   }
 }
 
-const checkForNewSubscribers = async () => {
+/**
+ * @return {Array}
+ */
+const getNewSubscribers = async () => {
   const newSubscribers = [];
 
   try {
@@ -105,12 +102,42 @@ const checkForNewSubscribers = async () => {
         break;
       }
     }
-    logger.info('checkForNewSubscribers', newSubscribers);
+    return newSubscribers;
   } catch (error) {
     logger.error('checkForNewSubscribers', error);
   }
 };
 
+/**
+ * @param {Array} contacts
+ * @param {Object} group
+ */
+const addContactsToBatchGroup = async (contacts, group) => {
+  let lastBatchGroup = group;
+
+  // If group count is greater than 100
+  if (lastBatchGroup.count === 100) {
+    // Create a new group and set it to lastBatchGroup.
+
+  }
+
+  if (contacts.length <= 100 - group.count) {
+    // Add the contacts. Otherwise add the max here, and check create a new group
+  } else {
+
+  }
+
+};
+
+const main = async () => {
+  const newSubscribers = await getNewSubscribers();
+  const lastBatchGroup = await getLastBatchGroup();
+
+  logger.debug('data', { newSubscribers, lastBatchGroup });
+
+  // await addContactsToBatchGroup(newSubscribers, lastBatchGroup);
+};
+
 (async () => {
-  const batchGroups = checkForNewSubscribers();
+  main();
 })();

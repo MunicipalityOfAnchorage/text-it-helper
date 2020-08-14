@@ -76,6 +76,16 @@ module.exports.getContactById = (contactId) => {
 };
 
 /**
+ * Fetch first page of groups.
+ *
+ * @param {String}
+ * @return {Promise}
+ */
+module.exports.getGroups = () => {
+  return get('groups').then(res => res.body);
+};
+
+/**
  * Fetch group by ID.
  *
  * @param {String}
@@ -177,4 +187,3 @@ module.exports.getUrlForContactId = (contactId) => {
 module.exports.getUrlForGroupId = (groupId) => {
   return `https://textit.in/contact/filter/${groupId}`;
 }
-
