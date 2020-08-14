@@ -126,7 +126,8 @@ module.exports.getAllSubscribersGroup = () => {
  * @return {Promise}
  */
 module.exports.getFirstPageOfAllSubscribersGroupMembers = () => {
-  return module.exports.getContactsByGroupId(config.groups.allSubscribers);
+  return get('contacts', { group: config.groups.allSubscribers })
+    .then(res => res.body);
 }
 
 /**
@@ -176,8 +177,4 @@ module.exports.getUrlForContactId = (contactId) => {
 module.exports.getUrlForGroupId = (groupId) => {
   return `https://textit.in/contact/filter/${groupId}`;
 }
-
-module.exports = {
-  get,
-};
 

@@ -17,7 +17,19 @@ const getBatchGroupNumber = (group) => {
 
   const groupNameParts = group.name.split(' ');
 
-  return Number(groupNameParts[1]);
+  const result = Number(groupNameParts[1]);
+  console.log('getBatchGroupNumber', result);
+  return result;
+};
+
+/**
+ * @param {Object} group
+ * @return {Boolean}
+ */
+const isContactInABatchGroup = (contact) => {
+  const result = contact.groups.some(group => getBatchGroupNumber(group));
+  console.log(contact.uuid, result);
+  return result;
 };
 
 /**
@@ -66,17 +78,20 @@ const getLastBatchGroup = async () => {
 }
 
 const checkForNewSubscribers = async () => {
+  const newSubscribers = [];
+
   try {
     // Get first page of subscribers.
     let subscribersRes = await textIt.getFirstPageOfAllSubscribersGroupMembers();
 
     let { results } = subscribersRes;
     let nextPage = subscribersRes.next;
-    let i = 0;
 
     while (results || nextPage) {
       results.forEach((contact) => {
-        console.log(i, contact);   
+        if (!isContactInABatchGroup(contact)) {
+          newSubscribers.push(contact.uuid);
+        }   
       });
 
       logger.debug(`Checked ${results.length} subscribers`);
@@ -90,11 +105,12 @@ const checkForNewSubscribers = async () => {
         break;
       }
     }
+    logger.info('checkForNewSubscribers', newSubscribers);
   } catch (error) {
-    console.log(error);
+    logger.error('checkForNewSubscribers', error);
   }
 };
 
-(async function() {
-  const batchGroups = getLastBatchGroup();
+(async () => {
+  const batchGroups = checkForNewSubscribers();
 })();
