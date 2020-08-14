@@ -7,7 +7,8 @@ const logger = require('heroku-logger');
 const textIt = require('./api/services/text-it');
 
 const getAllBatchGroups = async () => {
-  const groups = [];
+  let lastBatchGroup = null;
+  let lastBatchGroupNumber = null;
 
   try {
     // Get first page of groups.
@@ -20,7 +21,13 @@ const getAllBatchGroups = async () => {
     while (results || nextPage) {
       results.forEach((group) => {
         if (group.name.includes('Batch ')) {
-          groups.push(group);
+          const groupNameParts = group.name.split(' ');
+          const batchGroupNumber = Number(groupNameParts[1]);
+
+          if (batchGroupNumber > lastBatchGroupNumber) {
+            lastBatchGroup = group;
+            lastBatchGroupNumber = batchGroupNumber;
+          }
         }
       });
 
@@ -36,9 +43,9 @@ const getAllBatchGroups = async () => {
       }
     }
 
-    console.log(groups);
+    console.log(lastBatchGroup);
 
-    return groups;
+    return lastBatchGroup;
   } catch (error) {
     console.log(error);
   }
