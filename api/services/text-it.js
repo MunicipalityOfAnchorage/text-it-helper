@@ -121,6 +121,15 @@ module.exports.getAllSubscribersGroup = () => {
 }
 
 /**
+ * Fetch the group used to manage all subscribers.
+ *
+ * @return {Promise}
+ */
+module.exports.getFirstPageOfAllSubscribersGroupMembers = () => {
+  return module.exports.getContactsByGroupId(config.groups.allSubscribers);
+}
+
+/**
  * Create a new group.
  *
  * @param {String} name
