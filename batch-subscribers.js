@@ -6,7 +6,24 @@ const logger = require('heroku-logger');
 
 const textIt = require('./api/services/text-it');
 
-const getAllBatchGroups = async () => {
+/**
+ * @param {Object} group
+ * @return {Number}
+ */
+const getBatchGroupNumber = (group) => {
+  if (!group.name.includes('Batch ')) {
+    return null;
+  }
+
+  const groupNameParts = group.name.split(' ');
+
+  return Number(groupNameParts[1]);
+};
+
+/**
+ * @return {Object}
+ */
+const getLastBatchGroup = async () => {
   let lastBatchGroup = null;
   let lastBatchGroupNumber = null;
 
@@ -20,14 +37,11 @@ const getAllBatchGroups = async () => {
 
     while (results || nextPage) {
       results.forEach((group) => {
-        if (group.name.includes('Batch ')) {
-          const groupNameParts = group.name.split(' ');
-          const batchGroupNumber = Number(groupNameParts[1]);
+        const batchGroupNumber = getBatchGroupNumber(group);
 
-          if (batchGroupNumber > lastBatchGroupNumber) {
-            lastBatchGroup = group;
-            lastBatchGroupNumber = batchGroupNumber;
-          }
+        if (batchGroupNumber > lastBatchGroupNumber) {
+          lastBatchGroup = group;
+          lastBatchGroupNumber = batchGroupNumber;
         }
       });
 
@@ -47,7 +61,7 @@ const getAllBatchGroups = async () => {
 
     return lastBatchGroup;
   } catch (error) {
-    console.log(error);
+    logger.error('getLastBatchGroup', error);
   }
 }
 
@@ -82,5 +96,5 @@ const checkForNewSubscribers = async () => {
 };
 
 (async function() {
-  const batchGroups = getAllBatchGroups();
+  const batchGroups = getLastBatchGroup();
 })();
