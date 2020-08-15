@@ -34,6 +34,7 @@ module.exports = function parseFlowEvent() {
         modified_on,
         fields,
         groups: groups.map(group => group.name).join(', '),
+        // TODO: Add a 'html' property here to return entire payload as a <dl>.
       };
 
       return next();
