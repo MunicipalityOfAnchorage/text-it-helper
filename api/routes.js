@@ -4,9 +4,8 @@ const logger = require('heroku-logger');
 
 const authenticateMiddleware = require('./middleware/authenticate');
 const sendResponseMiddleware = require('./middleware/sendResponse');
-const getContactMiddleware = require('./middleware/inbox/getContact');
-const parseFlowEventMiddleware = require('./middleware/inbox/parseFlowEvent');
-const postZapierWebhookMiddleware = require('./middleware/inbox/postZapierWebhook');
+const parseFlowEventMiddleware = require('./middleware/parseFlowEvent');
+const postZapierWebhookMiddleware = require('./middleware/zapier/postZapierWebhook');
 const addSubcribersMiddleware = require('./middleware/subscriberGroups/addSubscribers');
 const getSubcribersMiddleware = require('./middleware/subscriberGroups/getSubscribers');
 const createSubscriberGroupsMiddleware = require('./middleware/subscriberGroups/createSubscriberGroups');
@@ -25,9 +24,8 @@ module.exports = (app) => {
     addSubcribersMiddleware(),
     sendResponseMiddleware());
 
-  app.post('/api/v1/inbox',
+  app.post('/api/v1/zapier/:id1/:id2',
     parseFlowEventMiddleware(),
-    getContactMiddleware(),
     postZapierWebhookMiddleware(),
     sendResponseMiddleware());
 
