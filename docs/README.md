@@ -79,39 +79,62 @@ curl --location --request POST 'http://localhost:8080/api/v1/subscriber-groups' 
 
 </details>
 
-## Inbox
+## Zapier
 
 ```
-POST /api/v1/inbox
+POST /api/v1/zapier/:id1/:id2
 ```
 
-This endpoint accepts a TextIt flow event, and fetches the contact information of the sender to forward the message and profile data to these external services:
+This endpoint accepts a TextIt flow event, and fetches the contact information of the sender, and forwards the event and contact data to a [Zapier webhook](https://zapier.com/help/doc/how-get-started-webhooks-zapier). The :id1 and :id2 route parameters correspond to the two unique ID's within your Zapier webhook URL:
 
-* [Zapier webhook](https://zapier.com/help/doc/how-get-started-webhooks-zapier)
+> https://hooks.zapier.com/hooks/catch/:id1/:id2
+
 
 <details>
 <summary>Example request</summary>
 
 ```
-curl --location --request POST 'http://localhost:8080/api/v1/inbox' \
+curl --location --request POST 'http://localhost:8080/api/v1/zapier/abc/def' \
 --header 'Accept: application/json' \
 --header 'Authorization: Basic [Your base64 encoded username and password]' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "contact": {
-        "name": "",
-        "urn": "tel:+12065551212",
-        "uuid": "f438c4c6-dc86-4eda-a0d0-48db703065d5"
-    },
-    "flow": {
-        "name": "Admin: Aaron Test",
-        "uuid": "b2155c34-c7dc-46bd-bb76-fa53480f50ed"
-    },
-    "results": {
-        "result": {
-            "category": "Has Text",
-            "value": "Hello there"
-        }
+   "contact": {
+      "name": "Aaron Schachter",
+      "urn": "tel:+12065551212",
+      "uuid": "a41aeb32-793c-46ba-b3ac-0bf9ada9f9bd"
+   },
+   "flow": {
+      "name": "Survey: Small Biz Alerts",
+      "uuid": "13a3aab9-063c-4388-8bb2-761c1ed6901a"
+   },
+   "results": {
+      "small_biz_alerts_anything_else": {
+         "category": "Has Text",
+         "value": "No"
+      },
+      "small_biz_survey_how_can_we_make_it_better": {
+         "category": "Has Text",
+         "value": "Change one thing"
+      },
+      "small_biz_survey_how_helpful": {
+         "category": "Other",
+         "value": "Haha"
+      },
+      "small_biz_survey_how_much_do_you_trust": {
+         "category": "Other",
+         "value": "Mostl "
+      },
+      "small_biz_survey_learned_something_new": {
+         "category": "Other",
+         "value": "Learned "
+      },
+      "small_biz_survey_what_do_you_like_most": {
+         "category": "Has Text",
+         "value": "Like most"
+      }
+   }
+}
 ```
 
 </details>
@@ -122,54 +145,55 @@ curl --location --request POST 'http://localhost:8080/api/v1/inbox' \
 ```
 {
     "uuid": "a41aeb32-793c-46ba-b3ac-0bf9ada9f9bd",
-    "name": "Aaron Schachter",
+    "flow": {
+        "name": "Survey: Small Biz Alerts",
+        "uuid": "13a3aab9-063c-4388-8bb2-761c1ed6901a"
+    },
+    "results": {
+        "small_biz_alerts_anything_else": {
+            "category": "Has Text",
+            "value": "No"
+        },
+        "small_biz_survey_how_can_we_make_it_better": {
+            "category": "Has Text",
+            "value": "Change one thing"
+        },
+        "small_biz_survey_how_helpful": {
+            "category": "Other",
+            "value": "Haha"
+        },
+        "small_biz_survey_how_much_do_you_trust": {
+            "category": "Other",
+            "value": "Mostl "
+        },
+        "small_biz_survey_learned_something_new": {
+            "category": "Other",
+            "value": "Learned "
+        },
+        "small_biz_survey_what_do_you_like_most": {
+            "category": "Has Text",
+            "value": "Like most"
+        }
+    },
     "phone": "12065551212",
+    "name": "Aaron Schachter",
+    "url": "https://textit.in/contact/read/a41aeb32-793c-46ba-b3ac-0bf9ada9f9bd",
     "blocked": false,
     "stopped": false,
     "created_on": "2020-07-17T21:00:27.625572Z",
-    "modified_on": "2020-08-08T02:22:36.198947Z",
-    "url": "https://textit.in/contact/read/a41aeb32-793c-46ba-b3ac-0bf9ada9f9bd",
-    "message": {
-        "flow_name": "Admin: Aaron Test",
-        "text": "Hello there"
-    },
+    "modified_on": "2020-08-15T15:22:04.215819Z",
     "fields": {
         "date_unsubscribed": "2020-08-05",
         "date_subscribed": "2020-08-04",
         "business_owner_response": "Yes",
         "received_stimulus": null,
-        "business_name": "Parkside Daycare",
+        "business_name": "Schachter daycare",
         "helping_employer_response": null,
         "response": null,
         "number_of_employees": "None",
         "test_campaign_date": null
     },
-    "groups": [
-        {
-            "uuid": "4e9443fe-51cb-4aee-aaac-360599158a63",
-            "name": "All Subscribers"
-        },
-        {
-            "uuid": "5f0c44c8-1af0-4c0b-b924-ff0f7c14ccc5",
-            "name": "Business Owner"
-        },
-        {
-            "uuid": "4a0f619f-08e7-40fa-8e2c-5cda0f66357e",
-            "name": "Not Helping Employer"
-        },
-        {
-            "uuid": "a202b216-c8cd-41be-b341-0656d4a1c061",
-            "name": "AK CARES question"
-        },
-        {
-            "uuid": "14fb5848-0734-45e9-bc1f-630062b7b263",
-            "name": "Remove from Stats"
-        },
-        {
-            "uuid": "d4562019-7529-4aa4-a59c-f886b44b9810",
-            "name": "Batch 2"
-        }
-    ]
+    "groups": "All Subscribers, Business Owner, Not Helping Employer, AK CARES question, Remove from Stats, Batch 2, Started Survey, Finished Survey"
 }
 ```
 
