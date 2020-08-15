@@ -35,11 +35,9 @@ module.exports = function parseFlowEvent() {
       req.data = {
         uuid,
         timestamp,
-        flow,
-        results,
+        // Removes +tel prefix.
         phone: contact.urn.substring(5),
         name,
-        // Removes +tel prefix.
         url: textIt.getUrlForContactId(uuid),
         blocked,
         stopped,
@@ -47,6 +45,8 @@ module.exports = function parseFlowEvent() {
         modified_on,
         fields,
         groups: groups.map(group => group.name).join(', '),
+        flow,
+        results,
       };
 
       return next();

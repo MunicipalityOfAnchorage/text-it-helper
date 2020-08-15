@@ -151,6 +151,25 @@ curl --location --request POST 'http://localhost:8080/api/v1/zapier/abc/def' \
 {
     "uuid": "a41aeb32-793c-46ba-b3ac-0bf9ada9f9bd",
     "timestamp": 1597505782895,
+    "phone": "12065551212",
+    "name": "Aaron Schachter",
+    "url": "https://textit.in/contact/read/a41aeb32-793c-46ba-b3ac-0bf9ada9f9bd",
+    "blocked": false,
+    "stopped": false,
+    "created_on": "2020-07-17T21:00:27.625572Z",
+    "modified_on": "2020-08-15T15:22:04.215819Z",
+    "fields": {
+        "date_unsubscribed": "2020-08-05",
+        "date_subscribed": "2020-08-04",
+        "business_owner_response": "Yes",
+        "received_stimulus": null,
+        "business_name": "Parkside Daycare",
+        "helping_employer_response": null,
+        "response": null,
+        "number_of_employees": "None",
+        "test_campaign_date": null
+    },
+    "groups": "All Subscribers, Business Owner, Not Helping Employer, AK CARES question, Remove from Stats, Batch 2, Started Survey, Finished Survey",
     "flow": {
         "name": "Survey: Small Biz Alerts",
         "uuid": "13a3aab9-063c-4388-8bb2-761c1ed6901a"
@@ -180,26 +199,7 @@ curl --location --request POST 'http://localhost:8080/api/v1/zapier/abc/def' \
             "category": "Has Text",
             "value": "Like most"
         }
-    },
-    "phone": "12065551212",
-    "name": "Aaron Schachter",
-    "url": "https://textit.in/contact/read/a41aeb32-793c-46ba-b3ac-0bf9ada9f9bd",
-    "blocked": false,
-    "stopped": false,
-    "created_on": "2020-07-17T21:00:27.625572Z",
-    "modified_on": "2020-08-15T15:22:04.215819Z",
-    "fields": {
-        "date_unsubscribed": "2020-08-05",
-        "date_subscribed": "2020-08-04",
-        "business_owner_response": "Yes",
-        "received_stimulus": null,
-        "business_name": "Parkside Daycare",
-        "helping_employer_response": null,
-        "response": null,
-        "number_of_employees": "None",
-        "test_campaign_date": null
-    },
-    "groups": "All Subscribers, Business Owner, Not Helping Employer, AK CARES question, Remove from Stats, Batch 2, Started Survey, Finished Survey"
+    }
 }
 ```
 
