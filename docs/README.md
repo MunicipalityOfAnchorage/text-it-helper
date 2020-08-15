@@ -3,7 +3,7 @@
 All endpoints use [basic authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Basic_authentication_scheme) to authenticate.
 
 * [POST /api/v1/subscriber-groups](#subscriber-groups)
-* [POST /api/v1/inbox](#inbox)
+* [POST /api/v1/zapier](#zapier)
 
 ## Subscriber Groups
 
@@ -87,7 +87,9 @@ POST /api/v1/zapier/:id1/:id2
 
 This endpoint accepts a TextIt flow event, and fetches the contact information of the sender, and forwards the event and contact data to a [Zapier webhook](https://zapier.com/help/doc/how-get-started-webhooks-zapier). The :id1 and :id2 route parameters correspond to the two unique ID's within your Zapier webhook URL:
 
-> https://hooks.zapier.com/hooks/catch/:id1/:id2
+```
+https://hooks.zapier.com/hooks/catch/:id1/:id2
+```
 
 To skip sending the payload to Zapier (which can be useful for testing), pass a `test` query parameter:
 
