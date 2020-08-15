@@ -16,6 +16,7 @@ module.exports = function parseFlowEvent() {
       const timestamp = Date.now();
 
       const textItRes = await textIt.getContactById(uuid);
+
       logger.debug('TextIt response', textItRes);
 
       if (!textItRes) {
@@ -46,7 +47,6 @@ module.exports = function parseFlowEvent() {
         modified_on,
         fields,
         groups: groups.map(group => group.name).join(', '),
-        // TODO: Add a 'html' property here to return entire payload as a <dl>.
       };
 
       return next();

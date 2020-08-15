@@ -9,7 +9,7 @@ module.exports = function postZapierWebhook() {
   return async (req, res, next) => {
     try {
       if (req.query.test) {
-        logger.debug('Zapier disabled');
+        logger.debug('Skipping send to Zapier');
 
         return next();
       }

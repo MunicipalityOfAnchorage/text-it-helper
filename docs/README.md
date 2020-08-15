@@ -89,6 +89,11 @@ This endpoint accepts a TextIt flow event, and fetches the contact information o
 
 > https://hooks.zapier.com/hooks/catch/:id1/:id2
 
+To skip sending the payload to Zapier (which can be useful for testing), pass a `test` query parameter:
+
+```
+POST http://localhost:8080/api/v1/zapier/abc/def?test=true
+```
 
 <details>
 <summary>Example request</summary>
