@@ -15,8 +15,17 @@ module.exports = function parseFlowEvent() {
       const { uuid } = contact;
 
       const textItRes = await textIt.getContactById(uuid);
-
       logger.debug('TextIt response', textItRes);
+
+      if (!textItRes) {
+        req.data = {
+          uuid,
+          flow,
+          results,
+        };
+
+        return next();
+      }
 
       const { fields, groups, name, blocked, stopped, created_on, modified_on } = textItRes;
 
