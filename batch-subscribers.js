@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const logger = require('heroku-logger');
 
-const textIt = require('./api/services/text-it');
+const textIt = require('./lib/text-it');
 
 /**
  * @param {Object} group

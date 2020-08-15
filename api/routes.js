@@ -6,9 +6,6 @@ const authenticateMiddleware = require('./middleware/authenticate');
 const sendResponseMiddleware = require('./middleware/sendResponse');
 const parseFlowEventMiddleware = require('./middleware/parseFlowEvent');
 const postZapierWebhookMiddleware = require('./middleware/zapier/postZapierWebhook');
-const addSubcribersMiddleware = require('./middleware/subscriberGroups/addSubscribers');
-const getSubcribersMiddleware = require('./middleware/subscriberGroups/getSubscribers');
-const createSubscriberGroupsMiddleware = require('./middleware/subscriberGroups/createSubscriberGroups');
 
 /**
  * API routes.
@@ -17,12 +14,6 @@ module.exports = (app) => {
   app.use(authenticateMiddleware());
 
   app.get('/', (req, res) => res.send('OK'));
-
-  app.post('/api/v1/subscriber-groups',
-    createSubscriberGroupsMiddleware(),
-    getSubcribersMiddleware(),
-    addSubcribersMiddleware(),
-    sendResponseMiddleware());
 
   app.post('/api/v1/zapier/:id1/:id2',
     parseFlowEventMiddleware(),

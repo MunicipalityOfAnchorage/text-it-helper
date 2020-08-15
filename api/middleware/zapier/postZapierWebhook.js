@@ -3,7 +3,7 @@
 const logger = require('heroku-logger');
 const superagent = require('superagent');
 
-const zapier = require('../../services/zapier');
+const zapier = require('../../../lib/zapier');
 
 module.exports = function postZapierWebhook() {
   return async (req, res, next) => {
