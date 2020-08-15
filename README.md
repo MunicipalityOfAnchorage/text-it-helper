@@ -1,8 +1,6 @@
-# TextIt Webhooks
+# TextIt Helper
 
-This is an API server that provides webhooks to use for [TextIt](https://textit.in/).
-
-It is built in Node.js with [Express](https://expressjs.com/).
+This project helps automate tasks for [TextIt](https://textit.in/) administration. It is built in Node.js with [Express](https://expressjs.com/).
 
 See [API documentation](./docs) for details.
 

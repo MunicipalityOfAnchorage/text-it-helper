@@ -1,5 +1,5 @@
 {
-  "name": "text-it-webhooks",
+  "name": "text-it-helper",
   "version": "1.0.0",
   "description": "Webhooks to use with TextIt",
   "main": "index.js",
