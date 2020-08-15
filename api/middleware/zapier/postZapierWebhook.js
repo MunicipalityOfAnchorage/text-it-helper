@@ -8,13 +8,15 @@ const zapier = require('../../services/zapier');
 module.exports = function postZapierWebhook() {
   return async (req, res, next) => {
     try {
-      if (zapier.isDisabled()) {
+      if (req.query.test) {
         logger.debug('Zapier disabled');
 
         return next();
       }
 
-      const zapierRes = await zapier.postWebhook(req.data);
+      const { id1, id2 } = req.params;
+
+      const zapierRes = await zapier.postWebhook({ id1, id2, data: req.data });
 
       logger.debug('Zapier response', zapierRes.body);
 
