@@ -13,6 +13,7 @@ module.exports = function parseFlowEvent() {
 
       const { contact, flow, results } = req.body;
       const { uuid } = contact;
+      const timestamp = Date.now();
 
       const textItRes = await textIt.getContactById(uuid);
       logger.debug('TextIt response', textItRes);
@@ -20,6 +21,7 @@ module.exports = function parseFlowEvent() {
       if (!textItRes) {
         req.data = {
           uuid,
+          timestamp,
           flow,
           results,
         };
@@ -31,6 +33,7 @@ module.exports = function parseFlowEvent() {
 
       req.data = {
         uuid,
+        timestamp,
         flow,
         results,
         phone: contact.urn.substring(5),

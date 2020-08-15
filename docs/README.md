@@ -145,6 +145,7 @@ curl --location --request POST 'http://localhost:8080/api/v1/zapier/abc/def' \
 ```
 {
     "uuid": "a41aeb32-793c-46ba-b3ac-0bf9ada9f9bd",
+    "timestamp": 1597505782895,
     "flow": {
         "name": "Survey: Small Biz Alerts",
         "uuid": "13a3aab9-063c-4388-8bb2-761c1ed6901a"
@@ -187,7 +188,7 @@ curl --location --request POST 'http://localhost:8080/api/v1/zapier/abc/def' \
         "date_subscribed": "2020-08-04",
         "business_owner_response": "Yes",
         "received_stimulus": null,
-        "business_name": "Schachter daycare",
+        "business_name": "Parkside Daycare",
         "helping_employer_response": null,
         "response": null,
         "number_of_employees": "None",
