@@ -146,12 +146,12 @@ module.exports.addContactsToBatchGroup = async (contacts, group) => {
 
   // If there aren't any spots left, we can create a group and add up to our batchSize.
   if (!spotsLeft) {
-    contacts.splice(0, batchSize);
+    const batch = contacts.splice(0, batchSize);
 
     // Add contacts to group if worker is enabled.
-    await createNewBatchGroupWithContacts(nextBatchGroupNumber, contacts);
+    await createNewBatchGroupWithContacts(nextBatchGroupNumber, batch);
 
-    result[nextBatchGroupNumber] = contacts;
+    result[nextBatchGroupNumber] = batch;
 
     return result;
   }
@@ -161,8 +161,6 @@ module.exports.addContactsToBatchGroup = async (contacts, group) => {
 
   result[currentBatchGroupNumber] = firstBatch;
 
-  console.log(result);
-
   if (isEnabled) {
     // Add them to our existing batch group.
     await textIt.createContactAction({ contacts: firstBatch, groupId });
@@ -170,8 +168,12 @@ module.exports.addContactsToBatchGroup = async (contacts, group) => {
 
   // If there are still contacts left to add:
   if (contacts.length) {
+    const secondBatch = contacts.splice(0, batchSize);
+
     // Get the next 100 contacts and add to a new group.
-    await createNewBatchGroupWithContacts(nextBatchGroupNumber, contacts.splice(0, batchSize));
+    await createNewBatchGroupWithContacts(nextBatchGroupNumber, secondBatch);
+
+    result[nextBatchGroupNumber] = secondBatch;
   }
 
   return result;

@@ -13,6 +13,19 @@ test.afterEach(() => {
 });
 
 /** @test */
+test('Result contains a single property for new batch if current batch is full', async (t) => {
+  const contacts = [1, 2, 3];
+  const group = {
+    name: 'Batch 7',
+    count: 100,
+  };
+
+  const result = await worker.addContactsToBatchGroup(contacts, group);
+
+  t.deepEqual(result['8'], [1, 2, 3]);
+});
+
+/** @test */
 test('Result contains a single property for current batch if enough spots left', async (t) => {
   const contacts = [1, 2, 3];
   const group = {
