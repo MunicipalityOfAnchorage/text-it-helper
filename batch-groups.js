@@ -123,7 +123,7 @@ const formatContactsAsLinks = (contacts) => {
 }
 
 /**
- * Executes TextIt API request to add given contacts to a given group.
+ * Adds new subscribers to current batch group, or creates new group if full.
  *
  * @async
  * @param {Array} contacts
@@ -137,26 +137,42 @@ const addContactsToBatchGroup = async (contacts, group) => {
     return;
   }
 
+  const result = {};
+  const batchSize = 100;
   const groupId = group.uuid;
-  const spotsLeft = 100 - group.count;
- 
-  if (contacts.length < spotsLeft) {
+  const spotsLeft = batchSize - group.count;
+  const currentBatchGroupNumber = getBatchGroupNumber(group);
+  const nextBatchGroupNumber = currentBatchGroupNumber + 1;
+
+  // If there aren't any spots left, we can create a group and add up to our batchSize.
+  if (!spotsLeft) {
+    contacts.splice(0, batchSize);
+
     // Add contacts to group if worker is enabled.
-    if (isEnabled) {
-      await textIt.createContactAction({ contacts, groupId });
-    }
+    await createNewBatchGroupWithContacts(nextBatchGroupNumber, contacts);
 
-    const data = {
-      contacts: formatContactsAsLinks(contacts).join(', '),
-      group: textIt.getUrlForGroupId(groupId)
-    };
+    result[nextBatchGroupNumber] = contacts;
 
-    logger.debug('addContactsToBatchGroup', { data });
-
-    return;
+    return result;
   }
 
-  // TODO: Create a new group and split.
+  // Otherwise remove enough contacts to fill the first group.
+  const firstBatch = contacts.splice(0, spotsLeft);
+
+  result[currentBatchGroupNumber] = firstBatch;
+
+  console.log(result);
+
+  if (isEnabled) {
+    // Add them to our existing batch group.
+    await textIt.createContactAction({ contacts: firstBatch, groupId });
+  }
+
+  // If there are still contacts left to add:
+  if (contacts.length) {
+    // Get the next 100 contacts and add to a new group.
+    await createNewBatchGroupWithContacts(nextBatchGroupNumber, contacts.splice(0, batchSize));
+  }
 };
 
 /**
@@ -165,14 +181,18 @@ const addContactsToBatchGroup = async (contacts, group) => {
  * @async
  * @param {Number} index
  * @param {Array} contacts
- * @return {Promise}
+ * @return {Promise<Object>}
  */
 const createNewBatchGroupWithContacts = async (index, contacts) => {
+  if (!isEnabled) {
+    return Promise.resolve(true);
+  }
+
   const group = await textIt.createGroup(`Batch ${index}`);
 
-  const groupId = group.uuid
+  await textIt.createContactAction({ contacts, groupId: group.uuid });
 
-  return textIt.createContactAction({ contacts, groupId })/;
+  return group;
 }
 
 // Places new subscribers into a batch group, if they haven't been added to one yet.
