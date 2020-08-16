@@ -2,9 +2,12 @@
 
 require('dotenv').config();
 
+const client = require('superagent');
 const logger = require('heroku-logger');
 
 const textIt = require('./lib/text-it');
+
+const isEnabled = false;
 
 /**
  * @param {Object} group
@@ -29,6 +32,9 @@ const isContactInABatchGroup = (contact) => {
 };
 
 /**
+ * Find the batch group with the largest index.
+ * Batch groups are named with "Batch {index}".
+ *
  * @return {Object}
  */
 const getLastBatchGroup = async () => {
@@ -110,32 +116,73 @@ const getNewSubscribers = async () => {
 
 /**
  * @param {Array} contacts
+ * @return {Array}
+ */
+const formatContactsAsLinks = (contacts) => {
+  return contacts.map(contactId => textIt.getUrlForContactId(contactId));
+}
+
+/**
+ * Executes TextIt API request to add given contacts to a given group.
+ *
+ * @async
+ * @param {Array} contacts
  * @param {Object} group
+ * @return {Promise}
  */
 const addContactsToBatchGroup = async (contacts, group) => {
-  let lastBatchGroup = group;
+  if (!contacts.length) {
+    logger.debug('No contacts to add to a batch group.');
 
-  // If group count is greater than 100
-  if (lastBatchGroup.count === 100) {
-    // Create a new group and set it to lastBatchGroup.
-
+    return;
   }
 
-  if (contacts.length <= 100 - group.count) {
-    // Add the contacts. Otherwise add the max here, and check create a new group
-  } else {
+  const groupId = group.uuid;
+  const spotsLeft = 100 - group.count;
+ 
+  if (contacts.length < spotsLeft) {
+    // Add contacts to group if worker is enabled.
+    if (isEnabled) {
+      await textIt.createContactAction({ contacts, groupId });
+    }
 
+    const data = {
+      contacts: formatContactsAsLinks(contacts).join(', '),
+      group: textIt.getUrlForGroupId(groupId)
+    };
+
+    logger.debug('addContactsToBatchGroup', { data });
+
+    return;
   }
 
+  // TODO: Create a new group and split.
 };
 
+/**
+ * Creates a new batch group with given index, and adds given contacts.
+ *
+ * @async
+ * @param {Number} index
+ * @param {Array} contacts
+ * @return {Promise}
+ */
+const createNewBatchGroupWithContacts = async (index, contacts) => {
+  const group = await textIt.createGroup(`Batch ${index}`);
+
+  const groupId = group.uuid
+
+  return textIt.createContactAction({ contacts, groupId })/;
+}
+
+// Places new subscribers into a batch group, if they haven't been added to one yet.
 const main = async () => {
   const newSubscribers = await getNewSubscribers();
   const lastBatchGroup = await getLastBatchGroup();
 
   logger.debug('data', { newSubscribers, lastBatchGroup });
 
-  // await addContactsToBatchGroup(newSubscribers, lastBatchGroup);
+  await addContactsToBatchGroup(newSubscribers, lastBatchGroup);
 };
 
 (async () => {
