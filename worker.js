@@ -130,7 +130,7 @@ const formatContactsAsLinks = (contacts) => {
  * @param {Object} group
  * @return {Promise}
  */
-const addContactsToBatchGroup = async (contacts, group) => {
+module.exports.addContactsToBatchGroup = async (contacts, group) => {
   if (!contacts.length) {
     logger.debug('No contacts to add to a batch group.');
 
@@ -173,6 +173,8 @@ const addContactsToBatchGroup = async (contacts, group) => {
     // Get the next 100 contacts and add to a new group.
     await createNewBatchGroupWithContacts(nextBatchGroupNumber, contacts.splice(0, batchSize));
   }
+
+  return result;
 };
 
 /**
@@ -202,7 +204,7 @@ const main = async () => {
 
   logger.debug('data', { newSubscribers, lastBatchGroup });
 
-  await addContactsToBatchGroup(newSubscribers, lastBatchGroup);
+  await module.exports.addContactsToBatchGroup(newSubscribers, lastBatchGroup);
 };
 
 (async () => {

@@ -1,10 +1,11 @@
 {
-  "name": "text-it-webhooks",
+  "name": "text-it-helper",
   "version": "1.0.0",
-  "description": "Webhooks to use with TextIt",
+  "description": "Automation helpers to use with TextIt",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "ava --serial"
   },
   "author": "Aaron Schachter",
   "license": "MIT",
@@ -15,5 +16,16 @@
     "heroku-logger": "^0.3.3",
     "lodash": "^4.17.19",
     "superagent": "^5.3.1"
+  },
+  "devDependencies": {
+    "ava": "^3.11.0",
+    "chai": "^4.2.0",
+    "nock": "^13.0.3"
+  },
+  "ava": {
+    "files": [
+      "test/*.test.js"
+    ],
+    "verbose": true
   }
 }
