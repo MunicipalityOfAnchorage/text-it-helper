@@ -51,3 +51,18 @@ test('Result contains properties for current and new batches if more subscribers
   t.deepEqual(result['7'], [1, 2, 3, 4, 5]);
   t.deepEqual(result['8'], [6, 7, 8, 9, 10]);
 });
+
+/** @test */
+test('Does not create new batch if number of subscribers equals spots left', async (t) => {
+  const contacts = [1, 2, 3];
+  const group = {
+    name: 'Batch 7',
+    count: 97,
+  };
+
+  const result = await worker.addContactsToBatchGroup(contacts, group);
+
+  t.deepEqual(result['7'], [1, 2, 3]);
+  t.is(result['8'], undefined);
+});
+
