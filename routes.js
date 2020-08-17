@@ -2,10 +2,10 @@
 
 const logger = require('heroku-logger');
 
-const authenticateMiddleware = require('./middleware/authenticate');
-const sendResponseMiddleware = require('./middleware/sendResponse');
-const parseFlowEventMiddleware = require('./middleware/parseFlowEvent');
-const postZapierWebhookMiddleware = require('./middleware/zapier/postZapierWebhook');
+const authenticateMiddleware = require('./lib/middleware/authenticate');
+const sendResponseMiddleware = require('./lib/middleware/sendResponse');
+const parseFlowEventMiddleware = require('./lib/middleware/parseFlowEvent');
+const postZapierWebhookMiddleware = require('./lib/middleware/zapier/postZapierWebhook');
 
 /**
  * API routes.
