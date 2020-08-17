@@ -4,7 +4,7 @@ const test = require('ava');
 const chai = require('chai');
 const nock = require('nock');
 
-const worker = require('../worker');
+const batches = require('../../lib/batches');
 
 chai.should();
 
@@ -20,7 +20,7 @@ test('Result contains a single property for new batch if current batch is full',
     count: 100,
   };
 
-  const result = await worker.addContactsToBatchGroup(contacts, group);
+  const result = await batches.addContactsToBatchGroup(contacts, group);
 
   t.deepEqual(result['8'], [1, 2, 3]);
 });
@@ -33,7 +33,7 @@ test('Result contains a single property for current batch if enough spots left',
     count: 50,
   };
 
-  const result = await worker.addContactsToBatchGroup(contacts, group);
+  const result = await batches.addContactsToBatchGroup(contacts, group);
 
   t.deepEqual(result['7'], [1, 2, 3]);
 });
@@ -46,7 +46,7 @@ test('Result contains properties for current and new batches if more subscribers
     count: 95,
   };
 
-  const result = await worker.addContactsToBatchGroup(contacts, group);
+  const result = await batches.addContactsToBatchGroup(contacts, group);
 
   t.deepEqual(result['7'], [1, 2, 3, 4, 5]);
   t.deepEqual(result['8'], [6, 7, 8, 9, 10]);
@@ -60,7 +60,7 @@ test('Does not create new batch if number of subscribers equals spots left', asy
     count: 97,
   };
 
-  const result = await worker.addContactsToBatchGroup(contacts, group);
+  const result = await batches.addContactsToBatchGroup(contacts, group);
 
   t.deepEqual(result['7'], [1, 2, 3]);
   t.is(result['8'], undefined);
