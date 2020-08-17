@@ -37,3 +37,17 @@ test('Result contains a single property for current batch if enough spots left',
 
   t.deepEqual(result['7'], [1, 2, 3]);
 });
+
+/** @test */
+test('Result contains properties for current and new batches if more subscribers than spots', async (t) => {
+  const contacts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const group = {
+    name: 'Batch 7',
+    count: 95,
+  };
+
+  const result = await worker.addContactsToBatchGroup(contacts, group);
+
+  t.deepEqual(result['7'], [1, 2, 3, 4, 5]);
+  t.deepEqual(result['8'], [6, 7, 8, 9, 10]);
+});

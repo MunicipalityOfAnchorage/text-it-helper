@@ -168,9 +168,9 @@ module.exports.addContactsToBatchGroup = async (contacts, group) => {
 
   // If there are still contacts left to add:
   if (contacts.length) {
+    // Get the next batch of contacts and add them to a new group.
     const secondBatch = contacts.splice(0, batchSize);
 
-    // Get the next 100 contacts and add to a new group.
     await createNewBatchGroupWithContacts(nextBatchGroupNumber, secondBatch);
 
     result[nextBatchGroupNumber] = secondBatch;
