@@ -4,6 +4,7 @@ const logger = require('heroku-logger');
 
 const authenticateMiddleware = require('./lib/middleware/authenticate');
 const sendResponseMiddleware = require('./lib/middleware/sendResponse');
+const formatDataMiddleware = require('./lib/middleware/export/formatData');
 const parseFlowEventMiddleware = require('./lib/middleware/parseFlowEvent');
 const postZapierWebhookMiddleware = require('./lib/middleware/zapier/postZapierWebhook');
 
@@ -14,6 +15,11 @@ module.exports = (app) => {
   app.use(authenticateMiddleware());
 
   app.get('/', (req, res) => res.send('OK'));
+
+  app.post('/api/v1/export',
+    parseFlowEventMiddleware(),
+    formatDataMiddleware(),
+    sendResponseMiddleware());
 
   app.post('/api/v1/zapier/:id1/:id2',
     parseFlowEventMiddleware(),
