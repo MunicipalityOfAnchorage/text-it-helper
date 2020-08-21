@@ -7,6 +7,7 @@ const sendResponseMiddleware = require('./lib/middleware/sendResponse');
 const formatDataMiddleware = require('./lib/middleware/export/formatData');
 const parseFlowEventMiddleware = require('./lib/middleware/parseFlowEvent');
 const postZapierWebhookMiddleware = require('./lib/middleware/zapier/postZapierWebhook');
+const createAirtableRecordMiddleware = require('./lib/middleware/airtable/createRecord');
 
 /**
  * API routes.
@@ -15,6 +16,11 @@ module.exports = (app) => {
   app.use(authenticateMiddleware());
 
   app.get('/', (req, res) => res.send('OK'));
+
+  app.post('/api/v1/airtable',
+    parseFlowEventMiddleware(),
+    createAirtableRecordMiddleware(),
+    sendResponseMiddleware());
 
   app.post('/api/v1/export',
     parseFlowEventMiddleware(),
