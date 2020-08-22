@@ -6,7 +6,7 @@ const authenticateMiddleware = require('./lib/middleware/authenticate');
 const sendResponseMiddleware = require('./lib/middleware/sendResponse');
 const formatDataMiddleware = require('./lib/middleware/export/formatData');
 const parseFlowEventMiddleware = require('./lib/middleware/parseFlowEvent');
-const postZapierWebhookMiddleware = require('./lib/middleware/zapier/postZapierWebhook');
+const postZapierWebhookMiddleware = require('./lib/middleware/zapier/postWebhook');
 const createAirtableRecordMiddleware = require('./lib/middleware/airtable/createRecord');
 
 /**
