@@ -10,30 +10,6 @@ POST /api/v1/flow-events
 
 This endpoint accepts a TextIt flow event, fetches the contact information of the sender, and returns the data as plain text, to use for sending internal emails from TextIt.
 
-It also forwards the flow event data if certain query parameters are passed.
-
-### Airtable
-
-```
-POST /api/v1/flow-events?airtable=SurveyResults
-```
-
-If an `airtable` query parameter is passed, the flow event data will be used to create a record in the table passed as the query parameter.
-
-It assumes there are `Contacts` and `Flows` tables set up, and the table to create the flow event record contains corresponding `Contact` and `Flow` link fields.
-
-### Zapier
-
-```
-POST /api/v1/flow-events?zapier=abc-def
-```
-
-If a `zapier` query parameter is passed, the flow event data will be posted to a [Zapier webhook](https://zapier.com/help/doc/how-get-started-webhooks-zapier). The `zapier` query parameter expects two id's, separated by a hyphen, which correspond to the route parameters correspond to the two unique ID's within your Zapier webhook URL:
-
-```
-https://hooks.zapier.com/hooks/catch/abc/def
-```
-
 
 <details>
 <summary>Example request</summary>
@@ -93,3 +69,27 @@ curl --location --request POST 'http://localhost:8080/api/v1/flow-events?zapier=
 }
 ```
 </details>
+
+It also forwards the flow event data if certain query parameters are passed.
+
+### Airtable
+
+```
+POST /api/v1/flow-events?airtable=SurveyResults
+```
+
+If an `airtable` query parameter is passed, the flow event data will be used to create a record in the table passed as the query parameter.
+
+It assumes there are `Contacts` and `Flows` tables set up, and the table to create the flow event record contains corresponding `Contact` and `Flow` link fields.
+
+### Zapier
+
+```
+POST /api/v1/flow-events?zapier=abc-def
+```
+
+If a `zapier` query parameter is passed, the flow event data will be posted to a [Zapier webhook](https://zapier.com/help/doc/how-get-started-webhooks-zapier). The `zapier` query parameter expects two id's, separated by a hyphen, which correspond to the route parameters correspond to the two unique ID's within your Zapier webhook URL:
+
+```
+https://hooks.zapier.com/hooks/catch/abc/def
+```
