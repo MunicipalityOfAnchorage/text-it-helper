@@ -51,13 +51,15 @@ curl --location --request POST 'http://localhost:8080/api/v1/flow-events?zapier=
         "Phone": "tel:+12065551212",
         "Profile": "https://textit.in/contact/read/a41aeb32-793c-46ba-b3ac-0bf9ada9f9bd",
         "Created On": "2020-07-17T21:00:27.625572Z",
-        "Groups": "All Subscribers, Business Owner, Not Helping Employer, AK CARES question, Remove from Stats, Batch 2, Started Survey, Finished Survey",
+        "Groups": "All Subscribers, Business Owner, Not Helping Employer, Healthcare provider, Public Facing / Food Business, AK CARES question, Remove from Stats, Batch 2, Started Survey, Finished Survey",
         "Business Name": "Schachter daycare",
         "Helping Employer Response": null,
         "Number Of Employees": "None",
+        "Flow": "Admin: Aaron Test",
+        "Submitted": "2020-08-26T03:51:57.849Z",
         "Ready": "Hello there"
     },
-    "text": "Name:\nAaron Schachter\n\n\nPhone:\ntel:+12065551212\n\n\nProfile:\nhttps://textit.in/contact/read/a41aeb32-793c-46ba-b3ac-0bf9ada9f9bd\n\n\nCreated On:\n2020-07-17T21:00:27.625572Z\n\n\nGroups:\nAll Subscribers, Business Owner, Not Helping Employer, AK CARES question, Remove from Stats, Batch 2, Started Survey, Finished Survey\n\n\nBusiness Name:\nSchachter daycare\n\n\nHelping Employer Response:\nnull\n\n\nNumber Of Employees:\nNone\n\nFlow Name: undefined\n\nReady:\nHello there\n\n",
+    "text": "Name:\nAaron Schachter\n\nPhone:\ntel:+12065551212\n\nProfile:\nhttps://textit.in/contact/read/a41aeb32-793c-46ba-b3ac-0bf9ada9f9bd\n\nCreated On:\n2020-07-17T21:00:27.625572Z\n\nGroups:\nAll Subscribers, Business Owner, Not Helping Employer, Healthcare provider, Public Facing / Food Business, AK CARES question, Remove from Stats, Batch 2, Started Survey, Finished Survey\n\nBusiness Name:\nSchachter daycare\n\nHelping Employer Response:\nnull\n\nNumber Of Employees:\nNone\n\nFlow:\nAdmin: Aaron Test\n\nSubmitted:\n2020-08-26T03:51:57.849Z\n\nReady:\nHello there\n",
     "responses": {
         "zapier": {
             "id": "414a1bc4-722d-4f3a-8787-47229e213d21",
