@@ -2,11 +2,11 @@
 
 const logger = require('heroku-logger');
 
+const airtableMiddleware = require('./lib/middleware/zapier');
+const zapierMiddleware = require('./lib/middleware/airtable');
 const authenticateMiddleware = require('./lib/middleware/authenticate');
 const sendResponseMiddleware = require('./lib/middleware/sendResponse');
-const formatDataMiddleware = require('./lib/middleware/export/formatData');
 const parseFlowEventMiddleware = require('./lib/middleware/parseFlowEvent');
-const postZapierWebhookMiddleware = require('./lib/middleware/zapier/postZapierWebhook');
 
 /**
  * API routes.
@@ -16,14 +16,10 @@ module.exports = (app) => {
 
   app.get('/', (req, res) => res.send('OK'));
 
-  app.post('/api/v1/export',
+  app.post('/api/v1/flow-events',
     parseFlowEventMiddleware(),
-    formatDataMiddleware(),
-    sendResponseMiddleware());
-
-  app.post('/api/v1/zapier/:id1/:id2',
-    parseFlowEventMiddleware(),
-    postZapierWebhookMiddleware(),
+    zapierMiddleware(),
+    airtableMiddleware(),
     sendResponseMiddleware());
 
   // Error handler
