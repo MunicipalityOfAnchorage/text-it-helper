@@ -1,8 +1,18 @@
-# API
+# TextIt Helper
+
+This project helps automate tasks for [TextIt](https://textit.in/) administration. 
+
+It is built in Node.js with [Express](https://expressjs.com/) for the [Anchorage Innovation Team](https://medium.com/anchorage-i-team/about-us-574f8ac4d839) by the [U.S. Digital Response](https://www.usdigitalresponse.org/).
+
+## Scheduled Tasks
+
+Run `node worker.js` to add new subscribers into a batch group.
+
+## API
 
 All endpoints use [basic authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Basic_authentication_scheme) to authenticate.
 
-## Flow Events 
+### Flow Events 
 
 ```
 POST /api/v1/flow-events
