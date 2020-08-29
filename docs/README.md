@@ -4,6 +4,9 @@ This project helps automate tasks for [TextIt](https://textit.in/) administratio
 
 It is built in Node.js with [Express](https://expressjs.com/) for the [Anchorage Innovation Team](https://medium.com/anchorage-i-team/about-us-574f8ac4d839) by the [U.S. Digital Response](https://www.usdigitalresponse.org/).
 
+## Scheduled Tasks
+
+Run `node worker.js` to add new subscribers into a batch group.
 
 ## API
 
