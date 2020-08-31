@@ -94,6 +94,13 @@ If an `airtable` query parameter is passed, the flow event data will be used to 
 
 It assumes there are `Contacts` and `Flows` tables set up, and the table to create the flow event record contains corresponding `Contact` and `Flow` link fields.
 
+To create a new table:
+
+* Create the table and fields in Airtable
+* Create the flow in TextIt, using the new Airtable's field names the various result fields that collect information from a user
+
+Always add new fields to Airtable first before setting up the TextIt webhook that posts to this `/flow-events` endpoint. Airtable will return a 422 if trying to write to a field that doesn't exist on a table.
+
 ### Zapier
 
 ```
