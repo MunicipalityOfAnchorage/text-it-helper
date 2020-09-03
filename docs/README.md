@@ -90,14 +90,15 @@ It also forwards the flow event data if certain query parameters are passed.
 POST /api/v1/flow-events?airtable=SurveyResults
 ```
 
-If an `airtable` query parameter is passed, the flow event data will be used to create a record in the table passed as the query parameter.
+If an `airtable` query parameter is passed, the flow event data will be used to create a record in the table passed as the query parameter (in this example, a table called "Survey Results").
 
 It assumes there are `Contacts` and `Flows` tables set up, and the table to create the flow event record contains corresponding `Contact` and `Flow` link fields.
 
 To create a new table:
 
-* Create the table and fields in Airtable
-* Create the flow in TextIt, using the new Airtable's field names the various result fields that collect information from a user
+* First create the table and its fields in Airtable, including a `Contact` reference field and a `Flow` reference field.
+
+* Next, create the flow in TextIt, using the new Airtable's field names for the various result fields that collect information from a user.
 
 Always add new fields to Airtable first before setting up the TextIt webhook that posts to this `/flow-events` endpoint. Airtable will return a 422 if trying to write to a field that doesn't exist on a table.
 
