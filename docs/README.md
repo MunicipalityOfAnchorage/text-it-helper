@@ -20,6 +20,36 @@ POST /api/v1/flow-events
 
 This endpoint accepts a TextIt flow event, fetches the contact information of the sender, and returns the data as plain text, to use for sending internal emails from TextIt.
 
+Use the "Call Webhook" action in TextIt to post to this endpoint.
+
+Add this payload to the default POST body to include the TextIt Run ID, used to upsert records per a flow run:
+
+```
+  "run", object(
+    "uuid", run.uuid, 
+    "flow", run.flow.uuid
+  ),
+```
+
+So the complete POST body looks like:
+
+```
+@(json(object(
+  "contact", object(
+    "uuid", contact.uuid, 
+    "name", contact.name, 
+    "urn", contact.urn
+  ),
+  "flow", object(
+    "uuid", run.flow.uuid, 
+    "name", run.flow.name
+  ),
+  "run", object(
+    "uuid", run.uuid
+  ),
+  "results", foreach_value(results, extract_object, "value", "category")
+)))
+```
 
 <details>
 <summary>Example request</summary>
