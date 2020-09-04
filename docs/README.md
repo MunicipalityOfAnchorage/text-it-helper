@@ -74,6 +74,9 @@ curl --location --request POST 'http://localhost:8080/api/v1/flow-events?zapier=
         "category": "Has Text",
         "value": "Hello there"
       }
+   },
+   "run": {
+      "uuid": "a977ec65-9efa-4f15-8c3d-c3e65edc029d"
    }
 }
 ```
@@ -95,6 +98,7 @@ curl --location --request POST 'http://localhost:8080/api/v1/flow-events?zapier=
         "Business Name": "Schachter daycare",
         "Helping Employer Response": null,
         "Number Of Employees": "None",
+        "Run": "a977ec65-9efa-4f15-8c3d-c3e65edc029d",
         "Flow": "Admin: Aaron Test",
         "Submitted": "2020-08-26T03:51:57.849Z",
         "Ready": "Hello there"
