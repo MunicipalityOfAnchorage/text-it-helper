@@ -12,17 +12,17 @@ Run `node worker.js` to add new subscribers into a batch group.
 
 All endpoints use [basic authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Basic_authentication_scheme) to authenticate.
 
-### Flow Events 
+### Run Results 
 
 ```
-POST /api/v1/flow-events
+POST /api/v1/run-results
 ```
 
-This endpoint accepts a TextIt flow event, fetches the contact information of the sender, and returns the data as plain text, to use for sending internal emails from TextIt.
+This endpoint accepts a request from a TextIt "Call Webhook" action in TextIt. It parses the flow run results, returns them as plain text, and can forward the data to Zapier or Airtable if query parameters are passed.
 
-Use the "Call Webhook" action in TextIt to post to this endpoint.
+#### Configuration
 
-Add this payload to the default POST body to include the TextIt Run ID, used to upsert records per a flow run:
+In each "Call Webhook" action, append this payload to the default POST body to include the TextIt Run ID. This Run ID used to upsert results that are saved during a flow run:
 
 ```
   "run", object(
@@ -31,7 +31,7 @@ Add this payload to the default POST body to include the TextIt Run ID, used to 
   ),
 ```
 
-So the complete POST body looks like:
+The complete POST body should look like:
 
 ```
 @(json(object(
@@ -51,11 +51,13 @@ So the complete POST body looks like:
 )))
 ```
 
+In a future iteration, we'll add the contact info to this payload to avoid making a call to the TextIt API - since we'll need to copy/paste this POST body into each "Call Webhook" action.
+
 <details>
 <summary>Example request</summary>
 
 ```
-curl --location --request POST 'http://localhost:8080/api/v1/flow-events?zapier=abc-def' \
+curl --location --request POST 'http://localhost:8080/api/v1/run-results?zapier=abc-def' \
 --header 'Accept: application/json' \
 --header 'Authorization: Basic [Your base64 encoded username and password]' \
 --header 'Content-Type: application/json' \
@@ -118,31 +120,50 @@ curl --location --request POST 'http://localhost:8080/api/v1/flow-events?zapier=
 
 It also forwards the flow event data if certain query parameters are passed.
 
-### Airtable
+#### Airtable
 
 ```
-POST /api/v1/flow-events?airtable=SurveyResults
+POST /api/v1/run-results?airtable=SurveyResults
 ```
 
-If an `airtable` query parameter is passed, the flow event data will be used to create a record in the table passed as the query parameter (in this example, a table called "Survey Results").
+If an `airtable` query parameter is passed, the run results will be used to upsert a record in the table passed as the query parameter (in this example, a table called "Survey Results").
 
-It assumes there are `Contacts` and `Flows` tables set up, and the table to create the flow event record contains corresponding `Contact` and `Flow` link fields.
+It requires that there are `Contacts` and `Flows` tables set up:
+
+* `Contacts`
+   * `Uuid` (Single-line text)
+   * `Name` (Single-line text)
+   * `Phone` (Single-line text)
+   * `Profile` (Phone number)
+   * `Created On` (Date)
+   * `Groups` (Long text)
+   * (Additional contact fields, in Title Case)
+
+* `Flows`
+   * `Uuid` (Single-line text)
+   * `Name` (Single-line text)
+
+The table to upsert a record into requires `Contact` and `Flow` link fields, as well as a `Run` text field to use for upserting results of a flow run.
 
 To create a new table:
 
-* First create the table and its fields in Airtable, including a `Contact` reference field and a `Flow` reference field.
+* First create the table in Airtable, with fields:
+    * `Contact` (Link to Contacts)
+    * `Flow` (Link to Flows)
+    * `Run` (Single-line text)
+    * (Run result fields, in Title Case)
 
-* Next, create the flow in TextIt, using the new Airtable's field names for the various result fields that collect information from a user.
+* Next, create the flow in TextIt, using the new table field names for the various results to save during a flow run.
 
-Always add new fields to Airtable first before setting up the TextIt webhook that posts to this `/flow-events` endpoint. Airtable will return a 422 if trying to write to a field that doesn't exist on a table.
+Always add a new field to Airtable first before saving it as a new result in TextIt -- Airtable will return a 422 if you attempt to write to a field that doesn't exist on a table.
 
-### Zapier
+#### Zapier
 
 ```
-POST /api/v1/flow-events?zapier=abc-def
+POST /api/v1/run-results?zapier=abc-def
 ```
 
-If a `zapier` query parameter is passed, the flow event data will be posted to a [Zapier webhook](https://zapier.com/help/doc/how-get-started-webhooks-zapier). The `zapier` query parameter expects two id's, separated by a hyphen, which correspond to the route parameters correspond to the two unique ID's within your Zapier webhook URL:
+If a `zapier` query parameter is passed, the run results will be posted to a [Zapier webhook](https://zapier.com/help/doc/how-get-started-webhooks-zapier). The `zapier` query parameter expects two id's, separated by a hyphen, which correspond to the route parameters correspond to the two unique ID's within your Zapier webhook URL:
 
 ```
 https://hooks.zapier.com/hooks/catch/abc/def

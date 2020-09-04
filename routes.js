@@ -16,7 +16,14 @@ module.exports = (app) => {
 
   app.get('/', (req, res) => res.send('OK'));
 
+  // To be deprecated by run-results
   app.post('/api/v1/flow-events',
+    parseFlowEventMiddleware(),
+    zapierMiddleware(),
+    airtableMiddleware(),
+    sendResponseMiddleware());
+
+  app.post('/api/v1/run-results',
     parseFlowEventMiddleware(),
     zapierMiddleware(),
     airtableMiddleware(),
