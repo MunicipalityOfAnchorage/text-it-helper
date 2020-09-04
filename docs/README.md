@@ -12,20 +12,52 @@ Run `node worker.js` to add new subscribers into a batch group.
 
 All endpoints use [basic authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Basic_authentication_scheme) to authenticate.
 
-### Flow Events 
+### Run Results 
 
 ```
-POST /api/v1/flow-events
+POST /api/v1/run-results
 ```
 
-This endpoint accepts a TextIt flow event, fetches the contact information of the sender, and returns the data as plain text, to use for sending internal emails from TextIt.
+This endpoint accepts a request from a "Call Webhook" action in a TextIt flow. It parses the flow run results, returns them as plain text, and forwards the data to a Zapier webhook or Airtable base if query parameters are passed.
 
+#### Configuration
+
+In each "Call Webhook" action, append this payload to the default POST body to include the TextIt Run ID. This Run ID used to upsert results that are saved during a flow run:
+
+```
+  "run", object(
+    "uuid", run.uuid, 
+    "flow", run.flow.uuid
+  ),
+```
+
+The complete POST body should look like:
+
+```
+@(json(object(
+  "contact", object(
+    "uuid", contact.uuid, 
+    "name", contact.name, 
+    "urn", contact.urn
+  ),
+  "flow", object(
+    "uuid", run.flow.uuid, 
+    "name", run.flow.name
+  ),
+  "run", object(
+    "uuid", run.uuid
+  ),
+  "results", foreach_value(results, extract_object, "value", "category")
+)))
+```
+
+In a future iteration, we'll add the contact info to this payload to avoid making a call to the TextIt API - since we'll need to copy/paste this POST body into each "Call Webhook" action.
 
 <details>
 <summary>Example request</summary>
 
 ```
-curl --location --request POST 'http://localhost:8080/api/v1/flow-events?zapier=abc-def' \
+curl --location --request POST 'http://localhost:8080/api/v1/run-results?zapier=abc-def' \
 --header 'Accept: application/json' \
 --header 'Authorization: Basic [Your base64 encoded username and password]' \
 --header 'Content-Type: application/json' \
@@ -44,6 +76,9 @@ curl --location --request POST 'http://localhost:8080/api/v1/flow-events?zapier=
         "category": "Has Text",
         "value": "Hello there"
       }
+   },
+   "run": {
+      "uuid": "a977ec65-9efa-4f15-8c3d-c3e65edc029d"
    }
 }
 ```
@@ -65,6 +100,7 @@ curl --location --request POST 'http://localhost:8080/api/v1/flow-events?zapier=
         "Business Name": "Schachter daycare",
         "Helping Employer Response": null,
         "Number Of Employees": "None",
+        "Run": "a977ec65-9efa-4f15-8c3d-c3e65edc029d",
         "Flow": "Admin: Aaron Test",
         "Submitted": "2020-08-26T03:51:57.849Z",
         "Ready": "Hello there"
@@ -84,31 +120,53 @@ curl --location --request POST 'http://localhost:8080/api/v1/flow-events?zapier=
 
 It also forwards the flow event data if certain query parameters are passed.
 
-### Airtable
+#### Airtable
 
 ```
-POST /api/v1/flow-events?airtable=SurveyResults
+POST /api/v1/run-results?airtable=SurveyResults
 ```
 
-If an `airtable` query parameter is passed, the flow event data will be used to create a record in the table passed as the query parameter (in this example, a table called "Survey Results").
+If an `airtable` query parameter is passed, the run results will be used to upsert a record in the table passed as the query parameter (in this example, a table called `Survey Results`).
 
-It assumes there are `Contacts` and `Flows` tables set up, and the table to create the flow event record contains corresponding `Contact` and `Flow` link fields.
+It requires that there are `Contacts` and `Flows` tables set up:
 
-To create a new table:
+* `Contacts`
+   * `Uuid` (Single-line text)
+   * `Name` (Single-line text)
+   * `Phone` (Single-line text)
+   * `Profile` (Phone number)
+   * `Created On` (Date)
+   * `Groups` (Long text)
+   * Additional contact fields, in Title Case -- e.g. `Business Name`.
+       * If you do not wish to store all fields on a TextIt contact in the corresponding Airtable, set a `TEXT_IT_CONTACT_FIELDS` config variable to specify which contact fields should be maintained in Airtable -- e.g.`TEXT_IT_CONTACT_FIELDS=business_name,helping_employer_response,number_of_employees`
 
-* First create the table and its fields in Airtable, including a `Contact` reference field and a `Flow` reference field.
+* `Flows`
+   * `Uuid` (Single-line text)
+   * `Name` (Single-line text)
 
-* Next, create the flow in TextIt, using the new Airtable's field names for the various result fields that collect information from a user.
+The table to upsert a record into requires `Contact` and `Flow` link fields, as well as a `Run` text field to use for upserting results of a flow run.
 
-Always add new fields to Airtable first before setting up the TextIt webhook that posts to this `/flow-events` endpoint. Airtable will return a 422 if trying to write to a field that doesn't exist on a table.
+To save run results into the table passed via `airtable` query parameter:
 
-### Zapier
+* First, create the table in Airtable with fields:
+    * `Contact` (Link to Contacts)
+    * `Flow` (Link to Flows)
+    * `Run` (Single-line text)
+    * The run result fields, in Title Case -- e.g. `How Helpful Rating`
+
+* Create a TextIt flow with various "Wait For Response" actions, saving each result to the corresponding Airtable field name -- e.g. `How Helpful Rating`.
+
+* Each time you want to upsert the user's responses within the flow, add a "Call Webhook" action to post to the `run-results?airtable=TableName` endpoint with the name of the table to upsert to, using PascalCase for the table name.
+
+Always add a new field to Airtable first before saving it as a new result in TextIt -- Airtable will return a 422 if you attempt to write to a field that doesn't exist on a table.
+
+#### Zapier
 
 ```
-POST /api/v1/flow-events?zapier=abc-def
+POST /api/v1/run-results?zapier=abc-def
 ```
 
-If a `zapier` query parameter is passed, the flow event data will be posted to a [Zapier webhook](https://zapier.com/help/doc/how-get-started-webhooks-zapier). The `zapier` query parameter expects two id's, separated by a hyphen, which correspond to the route parameters correspond to the two unique ID's within your Zapier webhook URL:
+If a `zapier` query parameter is passed, the run results will be posted to a [Zapier webhook](https://zapier.com/help/doc/how-get-started-webhooks-zapier). The `zapier` query parameter expects two id's, separated by a hyphen, which correspond to the route parameters correspond to the two unique ID's within your Zapier webhook URL:
 
 ```
 https://hooks.zapier.com/hooks/catch/abc/def
