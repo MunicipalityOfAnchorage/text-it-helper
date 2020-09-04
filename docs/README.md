@@ -18,7 +18,7 @@ All endpoints use [basic authentication](https://developer.mozilla.org/en-US/doc
 POST /api/v1/run-results
 ```
 
-This endpoint accepts a request from a TextIt "Call Webhook" action in TextIt. It parses the flow run results, returns them as plain text, and can forward the data to Zapier or Airtable if query parameters are passed.
+This endpoint accepts a request from a "Call Webhook" action in a TextIt flow. It parses the flow run results, returns them as plain text, and forwards the data to a Zapier webhook or Airtable base if query parameters are passed.
 
 #### Configuration
 
@@ -154,7 +154,7 @@ To save run results into the table passed via `airtable` query parameter:
     * `Run` (Single-line text)
     * The run result fields, in Title Case -- e.g. `How Helpful Rating`
 
-* Create a TextIt flow with various "Wait for response" actions, saving each result to the corresponding Airtable field name, -- e.g. `How Helpful Rating`.
+* Create a TextIt flow with various "Wait For Response" actions, saving each result to the corresponding Airtable field name -- e.g. `How Helpful Rating`.
 
 * Each time you want to upsert the user's responses within the flow, add a "Call Webhook" action to post to the `run-results?airtable=TableName` endpoint with the name of the table to upsert to, using PascalCase for the table name.
 
