@@ -126,7 +126,7 @@ It also forwards the flow event data if certain query parameters are passed.
 POST /api/v1/run-results?airtable=SurveyResults
 ```
 
-If an `airtable` query parameter is passed, the run results will be used to upsert a record in the table passed as the query parameter (in this example, a table called "Survey Results").
+If an `airtable` query parameter is passed, the run results will be used to upsert a record in the table passed as the query parameter (in this example, a table called `Survey Results`).
 
 It requires that there are `Contacts` and `Flows` tables set up:
 
@@ -137,7 +137,8 @@ It requires that there are `Contacts` and `Flows` tables set up:
    * `Profile` (Phone number)
    * `Created On` (Date)
    * `Groups` (Long text)
-   * (Additional contact fields, in Title Case)
+   * Additional contact fields, in Title Case -- e.g. `Business Name`.
+       * If you do not wish to store all fields on a TextIt contact in the corresponding Airtable, set a `TEXT_IT_CONTACT_FIELDS` config variable to specify which contact fields should be maintained in Airtable -- e.g.`TEXT_IT_CONTACT_FIELDS=business_name,helping_employer_response,number_of_employees`
 
 * `Flows`
    * `Uuid` (Single-line text)
@@ -145,15 +146,17 @@ It requires that there are `Contacts` and `Flows` tables set up:
 
 The table to upsert a record into requires `Contact` and `Flow` link fields, as well as a `Run` text field to use for upserting results of a flow run.
 
-To create a new table:
+To save run results into the table passed via `airtable` query parameter:
 
-* First create the table in Airtable, with fields:
+* First, create the table in Airtable with fields:
     * `Contact` (Link to Contacts)
     * `Flow` (Link to Flows)
     * `Run` (Single-line text)
-    * (Run result fields, in Title Case)
+    * The run result fields, in Title Case -- e.g. `How Helpful Rating`
 
-* Next, create the flow in TextIt, using the new table field names for the various results to save during a flow run.
+* Create a TextIt flow with various "Wait for response" actions, saving each result to the corresponding Airtable field name, -- e.g. `How Helpful Rating`.
+
+* Each time you want to upsert the user's responses within the flow, add a "Call Webhook" action to post to the `run-results?airtable=TableName` endpoint with the name of the table to upsert to, using PascalCase for the table name.
 
 Always add a new field to Airtable first before saving it as a new result in TextIt -- Airtable will return a 422 if you attempt to write to a field that doesn't exist on a table.
 
