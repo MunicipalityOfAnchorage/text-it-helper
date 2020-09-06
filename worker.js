@@ -14,8 +14,7 @@ const main = async () => {
     if (argv.task === 'digest') {
       const result = await digest.send();
 
-      console.log({ result }); 
-      return;
+      return result;
     }
 
     const newSubscribers = await batches.getNewSubscribers();
