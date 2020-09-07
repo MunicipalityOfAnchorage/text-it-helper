@@ -2,13 +2,19 @@
 
 require('dotenv').config();
 
+const { argv } = require('yargs')
 const logger = require('heroku-logger');
 
-const batches = require('./lib/batches');
+const batches = require('./lib/tasks/batches');
+const digest = require('./lib/tasks/digest');
 
 // Places new subscribers into a batch group, if they haven't been added to one yet.
 const main = async () => {
   try {
+    if (argv.task === 'digest') {
+      return await digest.send();
+    }
+
     const newSubscribers = await batches.getNewSubscribers();
     logger.debug('newSubscribers', newSubscribers);
 
