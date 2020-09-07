@@ -12,11 +12,7 @@ const digest = require('./lib/tasks/digest');
 const main = async () => {
   try {
     if (argv.task === 'digest') {
-      const result = await digest.send();
-
-      logger.debug('Digest', { result });
-
-      return result;
+      return await digest.send();
     }
 
     const newSubscribers = await batches.getNewSubscribers();
