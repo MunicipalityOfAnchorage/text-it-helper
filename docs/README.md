@@ -8,6 +8,8 @@ It is built in Node.js with [Express](https://expressjs.com/) for the [Anchorage
 
 Run `node worker.js` to add new subscribers into a batch group.
 
+Run `node worker.js --task=digest` to query Airtable for records that have been modified within the past hour, and post the count to a Zapier webhook if any have been modified.
+
 ## API
 
 All endpoints use [basic authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Basic_authentication_scheme) to authenticate.
