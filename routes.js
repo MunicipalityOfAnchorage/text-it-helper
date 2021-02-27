@@ -2,7 +2,7 @@
 
 const logger = require('heroku-logger');
 
-const createContactMiddleware = require('./lib/middleware/contacts/create');
+const flowStartsMiddleware = require('./lib/middleware/flowStarts');
 const airtableMiddleware = require('./lib/middleware/zapier');
 const zapierMiddleware = require('./lib/middleware/airtable');
 const authenticateMiddleware = require('./lib/middleware/authenticate');
@@ -18,7 +18,7 @@ module.exports = (app) => {
   app.get('/', (req, res) => res.send('OK'));
 
   app.post('/api/v1/contacts',
-    createContactMiddleware());
+    flowStartsMiddleware());
 
   // To be deprecated by run-results
   app.post('/api/v1/flow-events',
