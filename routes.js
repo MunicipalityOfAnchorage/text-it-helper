@@ -17,7 +17,7 @@ module.exports = (app) => {
 
   app.get('/', (req, res) => res.send('OK'));
 
-  app.post('/api/v1/contacts',
+  app.post('/api/v1/flow-starts',
     flowStartsMiddleware());
 
   // To be deprecated by run-results
