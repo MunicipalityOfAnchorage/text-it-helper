@@ -15,7 +15,7 @@
     "express": "^4.17.1",
     "heroku-logger": "^0.3.3",
     "libphonenumber-js": "^1.9.11",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "superagent": "^5.3.1",
     "yargs": "^15.4.1"
   },
